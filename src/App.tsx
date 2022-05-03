@@ -1,4 +1,6 @@
 import {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
   FunctionComponent,
   ReactNode,
   useCallback,
@@ -41,6 +43,40 @@ interface ITodo {
 type ActionType =
   | { type: "ADD"; text: string }
   | { type: "REMOVE"; id: number };
+
+const useNumber = (initialValue: number) => useState<number>(initialValue);
+
+type UseNumberValue = ReturnType<typeof useNumber>[0];
+type UseNumberSetValue = ReturnType<typeof useNumber>[1];
+
+const Incrementer: FunctionComponent<{
+  value: UseNumberValue;
+  setValue: UseNumberSetValue;
+}> = ({ value, setValue }) => (
+  <Button onClick={() => setValue(value + 1)} title={`Add - ${value}`} />
+);
+
+const Button: FunctionComponent<
+  DetailedHTMLProps<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > & {
+    title?: string;
+  }
+> = ({ children, style, title, ...rest }) => (
+  <button
+    {...rest}
+    style={{
+      ...style,
+      backgroundColor: "red",
+      color: "white",
+      border: "2px solid red",
+      fontSize: "large",
+    }}
+  >
+    {title ?? children}
+  </button>
+);
 
 function App() {
   const onlistClick = useCallback((item: string) => {
@@ -87,12 +123,16 @@ function App() {
     }
   }, []);
 
+  const [value, setValue] = useState(0);
+
   return (
     <div>
       <Heading title="intro" />
       <Box>Hello les gens</Box>
       <List items={["1", "2", "3"]} onClick={onlistClick} />
       <Box>{JSON.stringify(payload)}</Box>
+      <Incrementer value={value} setValue={setValue} />
+
       <Heading title="Todos" />
       {todos.map((todo) => (
         <div key={todo.id}>
@@ -111,7 +151,7 @@ function App() {
       ))}
       <div>
         <input type="text" ref={newTodoRef} />
-        <button onClick={onAddTodo}>Add todo</button>
+        <Button onClick={onAddTodo}>Add todo</Button>
       </div>
     </div>
   );
