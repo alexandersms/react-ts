@@ -4,7 +4,6 @@ import {
   FunctionComponent,
   ReactNode,
   useCallback,
-  useReducer,
   useRef,
 } from "react";
 import "./App.css";
@@ -16,15 +15,6 @@ const Box = ({ children }: { children: ReactNode }) => (
   <div style={{ padding: "1rem", fontWeight: "bold" }}>{children}</div>
 );
 
-// interface ITodo {
-//   id: number;
-//   done: boolean;
-//   text: string;
-// }
-
-// type ActionType =
-//   | { type: "ADD"; text: string }
-//   | { type: "REMOVE"; id: number };
 
 const Button: FunctionComponent<
   DetailedHTMLProps<
