@@ -2,6 +2,7 @@ import {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
   FunctionComponent,
+  HTMLAttributes,
   ReactNode,
   useCallback,
   useRef,
@@ -14,7 +15,6 @@ const Heading = ({ title }: { title: string }) => <h2>{title}</h2>;
 const Box = ({ children }: { children: ReactNode }) => (
   <div style={{ padding: "1rem", fontWeight: "bold" }}>{children}</div>
 );
-
 
 const Button: FunctionComponent<
   DetailedHTMLProps<
@@ -38,6 +38,26 @@ const Button: FunctionComponent<
   </button>
 );
 
+function UL<T>({
+  items,
+  itemClick,
+  render,
+}: DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement> & {
+  items: T[];
+  itemClick: (item: T) => void;
+  render: (item: T) => ReactNode;
+}) {
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <li onClick={() => itemClick(item)} key={index}>
+          {render(item)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function App() {
   const { addTodo, todos, removeTodo } = useTodos([
     { id: 0, text: "Acheter Pizza", done: false },
@@ -58,12 +78,18 @@ function App() {
       <Box>Hello les gens</Box>
 
       <Heading title="Todos" />
-      {todos.map((todo) => (
-        <div key={todo.id}>
-          {todo.text}
-          <button onClick={() => removeTodo(todo.id)}>Remove</button>
-        </div>
-      ))}
+
+      <UL
+        items={todos}
+        itemClick={(item) => alert(item.id)}
+        render={(todo) => (
+          <>
+            {todo.text}
+            <button onClick={() => removeTodo(todo.id)}>Remove</button>
+          </>
+        )}
+      />
+
       <div>
         <input type="text" ref={newTodoRef} />
         <Button onClick={onAddTodo}>Add todo</Button>
